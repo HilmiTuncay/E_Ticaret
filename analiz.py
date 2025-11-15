@@ -111,7 +111,8 @@ df_merge['week'] = df_merge['basket_date'].dt.isocalendar().week
 # Yaş grupları oluştur
 df_merge['age_group'] = pd.cut(df_merge['customer_age'],
                                 bins=[0, 25, 35, 45, 55, 100],
-                                labels=['18-25', '26-35', '36-45', '46-55', '55+'])
+                                labels=['18-25', '26-35', '36-45', '46-55', '55+'],
+                                ordered=True)
 
 print("   ✓ Zaman ve yaş grup özellikleri eklendi")
 
@@ -153,7 +154,7 @@ print(gender_sales)
 print("\n" + "-"*80)
 print("📊 YAŞ GRUBU BAZLI SATIŞ ANALİZİ")
 print("-"*80)
-age_sales = df_merge.groupby('age_group')['basket_count'].agg(['sum', 'mean', 'count']).sort_values('sum', ascending=False)
+age_sales = df_merge.groupby('age_group')['basket_count'].agg(['sum', 'mean', 'count']).sort_index()
 age_sales.columns = ['Toplam Satış', 'Ortalama Sepet', 'Sipariş Sayısı']
 age_sales['Yüzde'] = (age_sales['Toplam Satış'] / age_sales['Toplam Satış'].sum() * 100).round(2)
 print(age_sales)
@@ -243,7 +244,7 @@ plt.close()
 
 # Grafik 3: Yaş Grubu Bazlı Satış Analizi
 fig, ax = plt.subplots(figsize=(12, 6))
-age_sales_plot = df_merge.groupby('age_group')['basket_count'].sum().sort_values(ascending=False)
+age_sales_plot = df_merge.groupby('age_group')['basket_count'].sum().sort_index(ascending=True)
 bars = ax.bar(age_sales_plot.index.astype(str), age_sales_plot.values, color='#2ecc71')
 ax.set_xlabel('Yaş Grubu', fontsize=12, fontweight='bold')
 ax.set_ylabel('Toplam Satış Adedi', fontsize=12, fontweight='bold')
